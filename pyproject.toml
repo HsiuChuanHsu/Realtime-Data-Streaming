@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "realtime-data-streaming"
+version = "0.1.0"
+description = ""
+authors = ["HsiuChuanHsu <hchsu2106@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.13"
+apache-airflow = "^2.9.2"
+requests = "^2.32.3"
+docutils = ">=0.20.1,<0.21"  # Add a compatible version of docutils
+datetime = "^5.5"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
