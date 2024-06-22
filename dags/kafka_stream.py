@@ -45,7 +45,7 @@ def stream_data():
     print(res)
     
     conf = {
-        'bootstrap.servers': 'broker:29092'
+        'bootstrap.servers': 'localhost:9092' #  https://www.youtube.com/watch?v=HbVPyI-P3u0&ab_channel=%E7%A7%8B%E8%AF%AD%E6%A3%A0
     }
     
     producer = Producer(conf) # KafkaProducer(bootstrap_servers=['broker:29092'], max_block_ms=5000)
@@ -55,7 +55,10 @@ def stream_data():
         else:
             print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
 
-    producer.produce('users_created', json.dumps(res).encode('utf-8'), callback=delivery_report)
+    producer.produce(
+        'users_created'
+        , json.dumps(res).encode('utf-8')
+        , callback=delivery_report)
 
     producer.flush()
     
@@ -73,4 +76,5 @@ def stream_data():
 #         , python_callable=stream_data
 #     )
 
-stream_data()
+if __name__ == '__main__':
+    stream_data()
