@@ -1,6 +1,6 @@
 from datetime import datetime
-# from airflow import DAG
-# from airflow.operators.python import PythonOperator
+from airflow import DAG
+from airflow.operators.python import PythonOperator
 
 import uuid
 import json
@@ -8,10 +8,9 @@ import requests
 
 from confluent_kafka import Producer
 import time
+import logging
 
-default_args = {
-    'owner':'Gary Hsu'
-}
+
 
 def get_data():
     res = requests.get('https://randomuser.me/api/')
@@ -40,12 +39,13 @@ def format_data(res):
     return data
 
 def stream_data():
-    res = get_data()
-    res = format_data(res)
-    print(res)
+    # res = get_data()
+    # res = format_data(res)
     
     conf = {
-        'bootstrap.servers': 'localhost:9092' #  https://www.youtube.com/watch?v=HbVPyI-P3u0&ab_channel=%E7%A7%8B%E8%AF%AD%E6%A3%A0
+        'bootstrap.servers': 'broker:29092' 
+        #'localhost:9092'  for Local Test; 
+        #'broker:29092'    for Docker Running
     }
     
     producer = Producer(conf) # KafkaProducer(bootstrap_servers=['broker:29092'], max_block_ms=5000)
@@ -54,27 +54,41 @@ def stream_data():
             print('Message delivery failed: {}'.format(err))
         else:
             print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
-
-    producer.produce(
-        'users_created'
-        , json.dumps(res).encode('utf-8')
-        , callback=delivery_report)
-
-    producer.flush()
     
+    curr_time = time.time()
 
-# with DAG(
-#     'user_automation'
-#     , default_args = default_args
-#     , start_date = datetime(2024, 6, 21, 22, 00)
-#     , schedule='@daily'
-#     , catchup=False 
-# ) as dag:
+    while True:
+        if time.time() > curr_time + 60: #1 minute
+            break
+        try:
+            res = get_data()
+            res = format_data(res)
 
-#     streaming_task = PythonOperator(
-#         task_id = 'stream_data_from_api'
-#         , python_callable=stream_data
-#     )
+            producer.produce(
+                'users_created'
+                , json.dumps(res).encode('utf-8')
+                , callback=delivery_report)
+            # producer.flush()
 
-if __name__ == '__main__':
-    stream_data()
+        except Exception as e:
+            logging.error(f'An error occured: {e}')
+            continue
+
+
+default_args = {
+    'owner':'Gary Hsu'
+    , 'start_date': datetime(2024, 6, 21, 22, 00)
+}
+
+with DAG(
+    'user_automation'
+    , default_args = default_args
+    , schedule_interval='*/1 * * * *'
+    , catchup=False ) as dag:
+
+    streaming_task = PythonOperator(
+        task_id = 'stream_data_from_api'
+        , python_callable=stream_data
+    )
+
+streaming_task
