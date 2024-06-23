@@ -39,16 +39,13 @@ def format_data(res):
     return data
 
 def stream_data():
-    # res = get_data()
-    # res = format_data(res)
-    
     conf = {
         'bootstrap.servers': 'broker:29092' 
         #'localhost:9092'  for Local Test; 
         #'broker:29092'    for Docker Running
     }
     
-    producer = Producer(conf) # KafkaProducer(bootstrap_servers=['broker:29092'], max_block_ms=5000)
+    producer = Producer(conf) 
     def delivery_report(err, msg):
         if err is not None:
             print('Message delivery failed: {}'.format(err))
