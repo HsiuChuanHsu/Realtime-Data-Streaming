@@ -167,5 +167,22 @@ services:
     networks:
       - confluent
 
+  mongo: 
+    image: mongo:latest
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongadmin
+      MONGO_INITDB_ROOT_PASSWORD: mongadmin
+    ports:
+      - 27017:27017
+    # volumes:
+    #   - mongodata:/data/db
+    networks:
+      - confluent
+
+# volumes:
+#   mongodata:
+#     driver: local
+
 networks:
   confluent:
