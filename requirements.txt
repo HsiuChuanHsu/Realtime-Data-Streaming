@@ -134,3 +134,4 @@ wrapt==1.15.0
 WTForms==3.0.1
 yarl==1.9.2
 confluent-kafka ==2.4.0
+pymongo==4.7.3
