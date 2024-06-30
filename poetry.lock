@@ -112,6 +112,17 @@ files = [
 crc32c = ["crc32c"]
 
 [[package]]
+name = "py4j"
+version = "0.10.9.7"
+description = "Enables Python programs to dynamically access arbitrary Java objects"
+optional = false
+python-versions = "*"
+files = [
+    {file = "py4j-0.10.9.7-py2.py3-none-any.whl", hash = "sha256:85defdfd2b2376eb3abf5ca6474b51ab7e0de341c75a02f46dc9b5976f5a5c1b"},
+    {file = "py4j-0.10.9.7.tar.gz", hash = "sha256:0b6e5315bb3ada5cf62ac651d107bb2ebc02def3dee9d9548e3baac644ea8dbb"},
+]
+
+[[package]]
 name = "pymongo"
 version = "4.7.3"
 description = "Python driver for MongoDB <http://www.mongodb.org>"
@@ -191,6 +202,26 @@ ocsp = ["certifi", "cryptography (>=2.5)", "pyopenssl (>=17.2.0)", "requests (<3
 snappy = ["python-snappy"]
 test = ["pytest (>=7)"]
 zstd = ["zstandard"]
+
+[[package]]
+name = "pyspark"
+version = "3.5.1"
+description = "Apache Spark Python API"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pyspark-3.5.1.tar.gz", hash = "sha256:dd6569e547365eadc4f887bf57f153e4d582a68c4b490de475d55b9981664910"},
+]
+
+[package.dependencies]
+py4j = "0.10.9.7"
+
+[package.extras]
+connect = ["googleapis-common-protos (>=1.56.4)", "grpcio (>=1.56.0)", "grpcio-status (>=1.56.0)", "numpy (>=1.15)", "pandas (>=1.0.5)", "pyarrow (>=4.0.0)"]
+ml = ["numpy (>=1.15)"]
+mllib = ["numpy (>=1.15)"]
+pandas-on-spark = ["numpy (>=1.15)", "pandas (>=1.0.5)", "pyarrow (>=4.0.0)"]
+sql = ["numpy (>=1.15)", "pandas (>=1.0.5)", "pyarrow (>=4.0.0)"]
 
 [[package]]
 name = "pytz"
@@ -274,4 +305,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "4cc0fd2e0c7b2bcc263a8ff544928f79d18bbfc76ac5ca83dc2c0232ab348a22"
+content-hash = "1b9a49d88477ffbbf44fbb765565cec579249ddbc328a17f081e8a6fbdaad782"

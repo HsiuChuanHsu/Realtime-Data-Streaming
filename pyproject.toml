@@ -12,6 +12,7 @@ datetime = "^5.5"
 kafka-python = "^2.0.2"
 confluent-kafka = "^2.4.0"
 pymongo = "^4.7.3"
+pyspark = "^3.5.1"
 
 
 [build-system]
