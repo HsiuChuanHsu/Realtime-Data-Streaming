@@ -33,9 +33,14 @@ if __name__ == "__main__":
 
     spark = SparkSession.builder\
         .appName("Real-Time Streaming Data Pipeline")\
-        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.2")\
+        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.2,"
+                "org.mongodb.spark:mongo-spark-connector_2.13:10.3.0")\
+        .config("spark.mongodb.read.connection.uri", mongoURL) \
+        .config("spark.mongodb.write.connection.uri", mongoURL) \
         .getOrCreate()
-    
+        
+        
+
         #"org.mongodb.spark:mongo-spark-connector_2.11:2.41")\
         # .config("spark.mongodb.read.connection.uri", mongoURL) \
         # .config("spark.mongodb.write.connection.uri", mongoURL) \
@@ -55,19 +60,19 @@ if __name__ == "__main__":
 
     
     # Write the streaming data to the console
-    query = liveData.writeStream \
-        .outputMode("append") \
-        .format("console") \
-        .option("truncate", "false") \
-        .start()
+    # query = liveData.writeStream \
+    #     .outputMode("append") \
+    #     .format("console") \
+    #     .option("truncate", "false") \
+    #     .start()
 
-    # def write_mongo_row(df, epoch_id):
-    #     df.write.format("mongo")\
-    #         .mode("append")\
-    #         .option("uri",mongoURL)\
-    #         .save()
-    #     pass
+    def write_mongo_row(df, epoch_id):
+        df.write.format("com.mongodb.spark.sql.DefaultSource")\
+            .mode("append")\
+            .option("uri", mongoURL) \
+            .save()
+        pass
 
-    # query = liveData.writeStream.foreachBatch(write_mongo_row).start()
+    query = liveData.writeStream.foreachBatch(write_mongo_row).start()
     
     query.awaitTermination()
