@@ -66,7 +66,7 @@ if __name__ == "__main__":
         
         print(f'{res} Send--------')
         # Wait for 5 seconds before producing the next message
-        time.sleep(5)
+        time.sleep(10)
 
         # Poll the producer to handle delivery reports
         producer.poll(0)
