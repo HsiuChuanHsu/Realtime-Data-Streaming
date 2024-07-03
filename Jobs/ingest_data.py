@@ -9,7 +9,7 @@ KAFKA_BOOTSTRAP_SERVERS_CONS = 'localhost:9092' #'broker:29092'
 
 def create_selection_df_from_kafka(spark_df):
     schema = StructType([
-        StructField("id", StringType(), False),
+        StructField("_id", StringType(), False),
         StructField("first_name", StringType(), False),
         StructField("last_name", StringType(), False),
         StructField("gender", StringType(), False),
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     spark = SparkSession.builder\
         .appName("Real-Time Streaming Data Pipeline")\
         .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.2,"
-                "org.mongodb.spark:mongo-spark-connector_2.13:10.3.0")\
+                "org.mongodb.spark:mongo-spark-connector_2.12:3.0.2")\
         .config("spark.mongodb.read.connection.uri", mongoURL) \
         .config("spark.mongodb.write.connection.uri", mongoURL) \
         .getOrCreate()        
@@ -47,18 +47,11 @@ if __name__ == "__main__":
         .option("startingOffsets", "earliest") \
         .load()
 
-    
-    # Write the streaming data to the console
     liveData = create_selection_df_from_kafka(liveData)
-    # query = liveData.writeStream \
-    #     .outputMode("append") \
-    #     .format("console") \
-    #     .option("truncate", "false") \
-    #     .start()
-    # query.awaitTermination()
+    
 
     def write_mongo_row(df, epoch_id):
-        
+        # .format("mongo")  is used for jar: org.mongodb.spark:mongo-spark-connector_2.12:3.0.2
         try:
             df.write.format("mongo")\
                 .mode("append")\
@@ -70,13 +63,18 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error writing to MongoDB: {e}")
         
-        # df.show()
-        # com.mongodb.spark.sql.DefaultSource
-        # .option("ordered", "false")\
-        # .option("replaceDocument", "false")\
+
 
     query = liveData.writeStream\
         .foreachBatch(write_mongo_row)\
         .start()
-    #.trigger(processingTime='10 seconds')\
+
     query.awaitTermination()
+
+    # Write the streaming data to the console
+    # query = liveData.writeStream \
+    #     .outputMode("append") \
+    #     .format("console") \
+    #     .option("truncate", "false") \
+    #     .start()
+    # query.awaitTermination()
