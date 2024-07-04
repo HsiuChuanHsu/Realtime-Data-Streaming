@@ -190,8 +190,8 @@ services:
         - 7077:7077
         - 4040:4040
         - 18080:18080
-    volumes:
-      - ./jars:/opt/spark/jars
+    # volumes:
+    #   - ./jars:/opt/spark/jars
     networks:
         - confluent
 
