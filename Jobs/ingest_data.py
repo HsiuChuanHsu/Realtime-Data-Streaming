@@ -16,14 +16,17 @@ def create_selection_df_from_kafka(spark_df):
         StructField("address", StringType(), False),
         StructField("post_code", StringType(), False),
         StructField("email", StringType(), False),
-        StructField("username", StringType(), False),
+        StructField("username", TimestampType(), False),
         StructField("registered_date", StringType(), False),
         StructField("phone", StringType(), False),
-        StructField("picture", StringType(), False)
+        StructField("picture", StringType(), False),
+        StructField("timestamp", TimestampType(), False)
+
     ])
 
     sel = spark_df.selectExpr("CAST(value AS STRING)") \
-        .select(from_json(col('value'), schema).alias('data')).select("data.*")
+        .select(from_json(col('value'), schema).alias('data'))\
+        .select("data.*")
     print(sel)
 
     return sel

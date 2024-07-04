@@ -8,6 +8,7 @@ import requests
 
 from confluent_kafka import Producer
 import time
+from datetime import datetime
 import logging
 
 def get_data():
@@ -33,6 +34,8 @@ def format_data(res):
     data['registered_date'] = res['registered']['date']
     data['phone'] = res['phone']
     data['picture'] = res['picture']['medium']
+    data['timestamp'] = datetime.now().isoformat()
+
 
     return data
 
