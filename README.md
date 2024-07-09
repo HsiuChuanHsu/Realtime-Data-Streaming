@@ -4,12 +4,12 @@ In this data engineering project, system architecture was implemented using Pyth
 ## System Architecture
 ![](./images/Realtime-Data-Streaming.png)
 Overview:
-    - Data Fetching and Orchestration: 
-        A Random Name API integration is leveraged to fetch data for processing, which is then orchestrated via Apache Airflow
-    - Real-Time Data Ingestion and Communication: 
-        Kafka serves as a streaming platform, ingesting data and facilitating communication between pipeline components, ensuring seamless data flow and real-time processing.
-    - Persistent Data Storage: 
-        MongoDB acts as a persistent data store for personal information, allowing for later analysis and retrieval of critical data.
+- Data Fetching and Orchestration: 
+    A Random Name API integration is leveraged to fetch data for processing, which is then orchestrated via Apache Airflow
+- Real-Time Data Ingestion and Communication: 
+    Kafka serves as a streaming platform, ingesting data and facilitating communication between pipeline components, ensuring seamless data flow and real-time processing.
+- Persistent Data Storage: 
+    MongoDB acts as a persistent data store for personal information, allowing for later analysis and retrieval of critical data.
 
 ## What I Learned
 - Setting up a data pipeline with Apache Airflow
