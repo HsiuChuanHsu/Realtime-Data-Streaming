@@ -43,7 +43,12 @@ Overview:
 
 - for windows
     ```bash
-    $ (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -
+    (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -
+    ```
+
+- Install requirement
+    ```bash
+    poetry install
     ```
 
 ### Airflow
@@ -65,16 +70,29 @@ http://localhost:9021/
 ### Spark Steeaming
 ---
 - **Stateless Streaming**
-    The Spark Streaming application continuously consumes the data from the 'users_created' Kafka topic and writes it to the MongoDB database, specifically the "UserData" database and the "User" collection.
+    ```bash
+    poetry shell
+
+    python Jobs/ingest_data.py
+    ```
+    - Write data to MongoDB
+        - Continuously consumes the data from the 'users_created' Kafka topic and writes it to the MongoDB 
+        - "UserData" database and the "User" collection.
+
     ![](./images/API_Stateless_MDB.png)
 
 - **Stateful Streaming**
+    ```bash
+    poetry shell
+
+    python Jobs/ingest_data_aggregate.py
+    ```
     - Gender Count Aggregation
         - Groups the data by a 1-minute window using the window function.
         - Counts the number of males and females within each window using the when and count functions.
         - Calculates the total count for each window.
     - Write data to MongoDB
-        The Spark Streaming application continuously consumes the data from the 'users_created' Kafka topic and writes it to the MongoDB database, specifically the "UserData" database and the "GenderCounts" collection.
+        - "UserData" database and the "GenderCounts" collection.
 
     ![](./images/API_Statefull_MDB.png)
 
