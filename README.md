@@ -33,7 +33,7 @@ Overview:
     ```bash
     docker-compose up -d
     ```
-4. Install Python dependency management and package Poetry
+4. Install Python dependency management and package: Poetry
 - for mac
     ```bash
     brew install poetry
@@ -51,24 +51,34 @@ Overview:
     poetry install
     ```
 
+## Software Architecture
+| File | Purpose | 
+| :-- | :-- |
+| docker-compose.yml | Docker compose with the infrastructure required to run entire flow.|
+|dags/source_data.py| Contains the Airflow DAG definition that schedules the data streaming from the Random Name API to the Kafka topic `users_created` every minute, orchestrating the data ingestion process. |
+|Jobs/ingest_data.py|Implements the Spark Streaming application that consumes data from the `users_created` Kafka topic, processes it using Spark SQL, and writes the processed data to a MongoDB database in the `UserData` database and the `User` collection, enabling data storage and retrieval.|
+|Jobs/ingest_data_aggregate.py|Implements another Spark Streaming application that consumes data from the `users_created` Kafka topic, performs gender count aggregation using window functions, and writes the aggregated data to a MongoDB database in the `UserData` database and the "GenderCounts" collection, providing insights into gender distribution within the data.|
+
+
+## Instructions
 ### Airflow
----
-When the Airflow DAG is run, the 'stream_data_from_api' task will be executed, and the 'stream_data()' function will be called. This will result in the Random Name API being called every minute, and the retrieved data will be sent to the Kafka topic 'users_created' during the first 30 seconds of each minute.
+When the Airflow DAG is run, the `stream_data_from_api` task will be executed, and the `stream_data()` function will be called. This will result in the Random Name API being called every minute, and the retrieved data will be sent to the Kafka topic 'users_created' during the first 30 seconds of each minute.
 
 ![](./images/API_Airflow.png)
 To view the Airflow web UI, you can access http://localhost:8080 in your web browser.
 
 ### Kafka
----
-The Airflow DAG runs every minute and calls the stream_data() function, which retrieves data from the Random Name API and publishes it to the Kafka topic 'users_created'.
-The Spark Streaming application consumes the data from the 'users_created' Kafka topic and processes it using Spark SQL. The processed data is then written to a MongoDB database.
+The Airflow DAG runs every minute and calls the stream_data() function, which retrieves data from the Random Name API and publishes it to the Kafka topic `users_created`.
+The Spark Streaming application consumes the data from the `users_created` Kafka topic and processes it using Spark SQL. The processed data is then written to a MongoDB database.
 
 ![](./images/API_Kafka_Data.png)
-http://localhost:9021/
+To view the Kafka web UI, you can access http://localhost:9021/ in your web browser.
+
 
 
 ### Spark Steeaming
----
+The two Spark Streaming applications work together to ingest data from the Kafka topic, process it, and store the results in a MongoDB database. The stateless streaming application writes the raw data, while the stateful streaming application performs gender count aggregation, providing insights into the data.
+
 - **Stateless Streaming**
     ```bash
     poetry shell
@@ -76,8 +86,8 @@ http://localhost:9021/
     python Jobs/ingest_data.py
     ```
     - Write data to MongoDB
-        - Continuously consumes the data from the 'users_created' Kafka topic and writes it to the MongoDB 
-        - "UserData" database and the "User" collection.
+        - Continuously consumes the data from the `users_created` Kafka topic and writes it to the MongoDB 
+        - `UserData` database and the `User` collection.
 
     ![](./images/API_Stateless_MDB.png)
 
@@ -92,7 +102,7 @@ http://localhost:9021/
         - Counts the number of males and females within each window using the when and count functions.
         - Calculates the total count for each window.
     - Write data to MongoDB
-        - "UserData" database and the "GenderCounts" collection.
+        - `UserData` database and the `GenderCounts` collection.
 
     ![](./images/API_Statefull_MDB.png)
 
