@@ -54,10 +54,10 @@ Overview:
 ## Software Architecture
 | File | Purpose | 
 | :-- | :-- |
-| docker-compose.yml | Docker compose with the infrastructure required to run entire flow.|
-|dags/source_data.py| Contains the Airflow DAG definition that schedules the data streaming from the Random Name API to the Kafka topic `users_created` every minute, orchestrating the data ingestion process. |
-|Jobs/ingest_data.py|Implements the Spark Streaming application that consumes data from the `users_created` Kafka topic, processes it using Spark SQL, and writes the processed data to a MongoDB database in the `UserData` database and the `User` collection, enabling data storage and retrieval.|
-|Jobs/ingest_data_aggregate.py|Implements another Spark Streaming application that consumes data from the `users_created` Kafka topic, performs gender count aggregation using window functions, and writes the aggregated data to a MongoDB database in the `UserData` database and the "GenderCounts" collection, providing insights into gender distribution within the data.|
+|docker-compose.yml| Sets up the entire infrastructure using Docker Compose.|
+|dags/source_data.py|	Defines the Airflow DAG to schedule data streaming from the Random Name API to the Kafka topic users_created every minute.|
+|Jobs/ingest_data.py|	Contains the Spark Streaming application to process data from users_created Kafka topic and save it to MongoDB's UserData database in the User collection.|
+|Jobs/ingest_data_aggregate.py|	Contains the Spark Streaming application to perform gender count aggregation on data from users_created Kafka topic and save the results to MongoDB's UserData database in the GenderCounts collection.|
 
 
 ## Instructions
