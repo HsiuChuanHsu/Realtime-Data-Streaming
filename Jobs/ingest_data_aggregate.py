@@ -42,12 +42,12 @@ def write_mongo_row(df, epoch_id):
                         .orderBy("window")
         
         # Write the aggregated data to MongoDB
+        # .option("spark.mongodb.write.option.replaceDocument", "true") \
         gender_counts.write.format("mongo") \
             .mode("append") \
             .option("uri", 'mongodb://mongadmin:mongadmin@localhost:27017') \
             .option("database", "UserData") \
             .option("collection", "GenderCounts") \
-            .option("spark.mongodb.write.option.replaceDocument", "true") \
             .save()
         
         # Show the gender counts on the console
