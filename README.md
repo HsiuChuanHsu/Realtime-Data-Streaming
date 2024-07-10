@@ -22,37 +22,39 @@ Overview:
 
 ## Getting Started
 1. Clone the repository:
-```bash
-git clone https://github.com/HsiuChuanHsu/Realtime-Data-Streaming.git
-```
+    ```bash
+    git clone https://github.com/HsiuChuanHsu/Realtime-Data-Streaming.git
+    ```
 2. Navigate to the project directory:
-```bash
-cd Realtime-Data-Streaming
-```
+    ```bash
+    cd Realtime-Data-Streaming
+    ```
 3. Run Docker Compose
-```bash
-docker-compose up -d
-```
+    ```bash
+    docker-compose up -d
+    ```
 4. Install Python dependency management and package Poetry
 - for mac
-```bash
-brew install poetry
-# or 
-curl -sSL https://install.python-poetry.org | python3 -
-```
+    ```bash
+    brew install poetry
+    # or 
+    curl -sSL https://install.python-poetry.org | python3 -
+    ```
 
 - for windows
-```bash
-$ (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -
-```
+    ```bash
+    $ (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -
+    ```
 
 ### Airflow
+---
 When the Airflow DAG is run, the 'stream_data_from_api' task will be executed, and the 'stream_data()' function will be called. This will result in the Random Name API being called every minute, and the retrieved data will be sent to the Kafka topic 'users_created' during the first 30 seconds of each minute.
 
 ![](./images/API_Airflow.png)
 To view the Airflow web UI, you can access http://localhost:8080 in your web browser.
 
 ### Kafka
+---
 The Airflow DAG runs every minute and calls the stream_data() function, which retrieves data from the Random Name API and publishes it to the Kafka topic 'users_created'.
 The Spark Streaming application consumes the data from the 'users_created' Kafka topic and processes it using Spark SQL. The processed data is then written to a MongoDB database.
 
@@ -61,15 +63,18 @@ http://localhost:9021/
 
 
 ### Spark Steeaming
-- Stateless Streaming
+---
+- **Stateless Streaming**
     The Spark Streaming application continuously consumes the data from the 'users_created' Kafka topic and writes it to the MongoDB database, specifically the "UserData" database and the "User" collection.
     ![](./images/API_Stateless_MDB.png)
 
-- Stateless Streaming
+- **Stateful Streaming**
     - Gender Count Aggregation
         - Groups the data by a 1-minute window using the window function.
         - Counts the number of males and females within each window using the when and count functions.
         - Calculates the total count for each window.
+    - Write data to MongoDB
+        The Spark Streaming application continuously consumes the data from the 'users_created' Kafka topic and writes it to the MongoDB database, specifically the "UserData" database and the "GenderCounts" collection.
 
-    ![](./images/API_Stateless_MDB.png)
+    ![](./images/API_Statefull_MDB.png)
 
