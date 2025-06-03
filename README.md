@@ -106,3 +106,5 @@ The two Spark Streaming applications work together to ingest data from the Kafka
 
     ![](./images/API_Statefull_MDB.png)
 
+
+@@ Test @@
